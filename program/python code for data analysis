@@ -1,0 +1,162 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import csv
+
+data = pd.read_csv("G:/My Drive/Intel Project/Updated/unnati_phase1_data_revised.csv")
+alert_data = data.iloc[:,0].tolist()
+date_data = data.iloc[:,1].tolist()
+t_data = data.iloc[:,2].tolist()
+lat_data = data.iloc[:,3].tolist()
+long_data = data.iloc[:,4].tolist()
+vehicle_data = data.iloc[:,5].tolist()
+speed_data = data.iloc[:,6].tolist()
+
+#Analysis based on Time
+time_data = []
+for i in t_data:
+    time_data.append(i[0:4])
+
+#Analysis based on Vehicle
+vehicle_no = [] 
+for i in vehicle_data:
+    if i not in vehicle_no:
+        vehicle_no.append(i)
+for i in vehicle_no:
+    print("The no of alerts occured by",i,":",vehicle_data.count(i))
+
+#Analysis based on Alerts
+alert_no = [] 
+for i in alert_data:
+    if i not in alert_no:
+        alert_no.append(i)
+for i in alert_no:
+    print("The type of alerts occured ",i,":",alert_data.count(i))
+
+#Analysis for FCW & PDW
+cas_ldw = []
+cas_hmw = []
+cas_fcw = []
+cas_pcw = []
+for i in range(len(alert_data)):
+    if alert_data[i] ==  "cas_ldw":
+        cas_ldw.append(i)
+    elif alert_data[i] ==  "cas_hmw":
+        cas_hmw.append(i)
+    elif alert_data[i] ==  "cas_fcw":
+        cas_fcw.append(i)
+    elif alert_data[i] ==  "cas_pcw":
+        cas_pcw.append(i)
+    else:
+        print("Uncertain Case")
+
+lat_ldw = []
+long_ldw = []
+time_ldw = []
+speed_ldw = []
+lat_hmw = []
+long_hmw = []
+time_hmw = []
+speed_hmw = []
+lat_fcw = []
+long_fcw = []
+time_fcw = []
+speed_fcw = []
+lat_pcw = []
+long_pcw = []
+time_pcw = []
+speed_pcw = []
+
+#Mapping Lat and Long with respect to alerts
+for i in cas_ldw:
+    lat_ldw.append(lat_data[i])
+    long_ldw.append(long_data[i])
+    time_ldw.append(time_data[i])
+    speed_ldw.append(speed_data[i])    
+for i in cas_hmw:
+    lat_hmw.append(lat_data[i])
+    long_hmw.append(long_data[i])
+    time_hmw.append(time_data[i])
+    speed_hmw.append(speed_data[i])
+for i in cas_fcw:
+    lat_fcw.append(lat_data[i])
+    long_fcw.append(long_data[i])
+    time_fcw.append(time_data[i])
+    speed_fcw.append(speed_data[i])
+for i in cas_pcw:
+    lat_pcw.append(lat_data[i])
+    long_pcw.append(long_data[i])
+    time_pcw.append(time_data[i])
+    speed_pcw.append(speed_data[i])
+
+
+#Ploting a graph for FCW and PCW
+
+time = np.linspace(0, 24, 1976)    
+fig, ax = plt.subplots(figsize=(10, 6))
+ax.scatter(time, speed_pcw, color='red', marker='o', label='PCW')
+time = np.linspace(0, 24, 590)
+ax.scatter(time, speed_fcw, color='blue', marker='x', label='FCW')
+ax.set_title('Speed VS Time')
+ax.set_xlabel('Time')
+ax.set_ylabel('Speed')
+ax.legend()
+
+plt.show()
+
+#Ploting a graph for HMW
+
+time = np.linspace(0, 24, 12328)
+fig, ax = plt.subplots(figsize=(10, 6))
+ax.scatter(time, speed_hmw, color='red', marker='o', label='HMW')
+ax.set_title('Speed VS Time')
+ax.set_xlabel('Time')
+ax.set_ylabel('Speed')
+ax.legend()
+
+plt.show()
+
+#Ploting a graph for HMW
+time = np.linspace(0, 24, 6431)
+fig, ax = plt.subplots(figsize=(10, 6))
+ax.scatter(time, speed_ldw, color='red', marker='o', label='LDW')
+ax.set_title('Speed VS Time')
+ax.set_xlabel('Time')
+ax.set_ylabel('Speed')
+ax.legend()
+
+plt.show()
+
+#Creation of CSV file
+data = list(zip(lat_fcw, long_fcw))
+with open('FCW.csv', mode='w', newline='') as file:
+    csv_wt = csv.writer(file)
+    csv_wt.writerow(['Lat','Long'])
+    csv_wt.writerows(data)
+
+data = list(zip(lat_pcw, long_pcw))
+with open('PCW.csv', mode='w', newline='') as file:
+    csv_wt = csv.writer(file)
+    csv_wt.writerow(['Lat','Long'])
+    csv_wt.writerows(data)
+
+data = list(zip(lat_hmw, long_hmw))
+with open('HMW.csv', mode='w', newline='') as file:
+    csv_wt = csv.writer(file)
+    csv_wt.writerow(['Lat','Long'])
+    csv_wt.writerows(data)
+
+data = list(zip(lat_ldw, long_ldw))
+with open('LDW.csv', mode='w', newline='') as file:
+    csv_wt = csv.writer(file)
+    csv_wt.writerow(['Lat','Long'])
+    csv_wt.writerows(data)
+
+
+    
+        
+    
+    
+    
+
+
